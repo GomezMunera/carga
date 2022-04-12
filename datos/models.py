@@ -9,24 +9,44 @@ class Vehiculo(models.Model):
     color = models.CharField(max_length=20)
     nombre = models.CharField(max_length=40)
     apellido = models.CharField(max_length=40)
-    peso_inicial = models.FloatField(default=0.0)
-    dato_inscripcion = models.DateTimeField('Inscripción vehículo')
+    tara = models.FloatField(default=0.0)
+    fecha = models.DateTimeField('Inscripción vehículo')
 
     def __str__(self):
         return self.nombre
 
 class Registro(models.Model):
     vehiculo = models.ForeignKey(Vehiculo, on_delete=models.CASCADE)
-    dato_registro = models.DateTimeField('Fecha')
+    fecha = models.DateTimeField('Fecha')
     peso_neto = models.FloatField(default = 0.0)
     # peso carga = neto - inicial
     peso_carga = models.FloatField(default = 0.0) 
 
     def __str__(self):
-        return self.dato_registro.strftime("%Y/%m/%d %H:%M:%S")
+        return self.fecha.strftime("%Y/%m/%d %H:%M:%S")
 
 @receiver(post_save, sender=Registro)
 def calcular_carga(sender, instance, created, **kwargs):
     if created:
-        instance.peso_carga = instance.peso_neto - instance.vehiculo.peso_inicial
+        instance.peso_carga = instance.peso_neto - instance.vehiculo.tara
         instance.save()
+
+class Configuracion(models.Model):
+    VELOCIDAD_BAUDIOS = (
+        ('1200', '1200'),
+        ('2400', '2400'),
+        ('4800', '4800'),
+        ('9600', '9600'),
+        ('19200', '19200'),
+        ('38400', '38400'),
+        ('115200', '115200'),
+    )
+    lectura = models.FloatField(default=0.0)
+    puerto = models.CharField(max_length=255)
+    velocidad = models.CharField(max_length=6, choices=VELOCIDAD_BAUDIOS)
+
+    def __str__(self):
+        return 'Puerto: '+self.puerto +', Velocidad: ' + self.velocidad
+
+    class Meta:
+        verbose_name_plural='Configuraciones'

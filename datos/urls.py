@@ -5,6 +5,7 @@ from . import views
 
 app_name = 'datos'
 urlpatterns = [
+
     path('', views.index, name='index'),
 
     # path for detail

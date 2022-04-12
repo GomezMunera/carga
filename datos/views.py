@@ -12,16 +12,17 @@ from .models import Vehiculo, Registro
 # index create without shorcut
 """ 
 def index(request):
-    latest_vehiculo_list = Vehiculo.objects.order_by('-dato_inscripcion')[:5]
+    latest_vehiculo_list = Vehiculo.objects.order_by('-fecha')[:5]
     template = loader.get_template('datos/datos.html')
     context = {
         'latest_vehiculo_list': latest_vehiculo_list,
     }
     return HttpResponse(template.render(context,request))
 """
+
 # index create with shortcut, is necessary obtain the context and import render
 def index(request):
-    latest_vehiculo_list = Vehiculo.objects.order_by('dato_inscripcion').reverse()[:10] # muestra el último
+    latest_vehiculo_list = Vehiculo.objects.order_by('fecha').reverse()[:10] # muestra el último
     context = {'latest_vehiculo_list':latest_vehiculo_list}
     return render(request, 'datos/index.html', context)
 
@@ -38,7 +39,7 @@ def detail(request, vehiculo_id):
 def detail(request, vehiculo_id):
     vehiculo = get_object_or_404(Vehiculo, pk=vehiculo_id)
     return render(request,'datos/detail.html',{'vehiculo':vehiculo})
-    #lates_register_list = Vehiculo.objects.order_by('dato_inscripcion').reverse()
+    #lates_register_list = Vehiculo.objects.order_by('fecha').reverse()
     #return render(request,'datos/detail.html',{'lates_register_list':lates_register_list})
 
 def results(request, registro_id):

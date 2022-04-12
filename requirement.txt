@@ -1,0 +1,6 @@
+asgiref==3.5.0
+Django==4.0.3
+pyserial==3.5
+sqlparse==0.4.2
+threaded==4.1.0
+tzdata==2021.5
