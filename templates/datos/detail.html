@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Registro de Autos</title>
+</head>
+<body>
+    <h1>Vehículos</h1>
+
+        <legend><h1> El Conductor registrado es: {{ vehiculo.nombre }} {{ vehiculo.apellido}}</h1></legend>
+        
+        <h2>El número de registros es: {{ vehiculo.registro_set.all.count }}</h2>
+
+        <h2>Tiene los siguientes registros</h2>
+        <ul>
+            {% for registro in vehiculo.registro_set.all %}
+                <li><a href="{% url 'datos:results' registro.id %}"> {{ registro }}</a></li>
+            {% endfor %}
+        </ul>
+
+</body>
+</html>
