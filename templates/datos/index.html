@@ -1,3 +1,4 @@
+{% load static %}
 <!DOCTYPE html>
 <html lang="es-co">
 <head>
@@ -5,6 +6,8 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Registro de Autos</title>
+    <script src="{% static '/js/vue.js' %}"></script>
+    <script src="{% static '/js/axios.min.js' %}"></script>
 </head>
 <body>
     <h1>Registro de autos</h1>
@@ -18,5 +21,23 @@
     {% else %}
         <p>No hay vehiculos registrados.</p>
     {% endif %}
+    <script>
+        Vue.createApp({
+            data() {
+                function leer() {
+                    axios.get('/carga/lectura_actual', {}).then(function (response) {
+                        console.log(response);
+                    }).catch(function (error) {
+                        console.log(error);
+                    });
+                    setTimeout(leer(), 3000)
+                }
+                leer()
+                return {
+                    message: 'Hello Vue!'
+                }
+            }
+        }).mount('#app')        
+    </script>
 </body>
 </html>

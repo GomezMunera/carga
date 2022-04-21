@@ -1,12 +1,12 @@
 from multiprocessing import context
 from django.shortcuts import render, get_object_or_404
 
-from django.http import HttpResponse
+from django.http import HttpResponse, JsonResponse
 #from django.template import loader
 from django.http import Http404
 
 # call the models
-from .models import Vehiculo, Registro
+from .models import Configuracion, Vehiculo, Registro
 
 # Create your views here.
 # index create without shorcut
@@ -51,3 +51,7 @@ def results(request, registro_id):
 def vote(request, vehiculo_id):
     response = "Votación por el vehículo %s."
     return HttpResponse(response % vehiculo_id)
+
+def lecturaActual(request):
+    configuracion = Configuracion.objects.first()
+    return JsonResponse(configuracion)

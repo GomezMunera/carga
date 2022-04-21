@@ -1,3 +1,4 @@
+from distutils.command.config import config
 import serial, serial.tools.list_ports
 from threading import Thread, Event
 import time
@@ -6,7 +7,8 @@ from .models import Configuracion
 #% clase de comunicación serial
 
 class Comunicacion(object):
-    espera = 10
+    espera = 0.5
+    lectura = None
     def configuracion(self):
         self.lectura = serial.Serial()
         self.lectura.timeout = 0.5
@@ -45,20 +47,18 @@ class Comunicacion(object):
     def leerDatos(self):
         while(self.alive.isSet() and self.lectura.is_open):       
             try:
-                data = self.calculo()
-                print(data)
-                if(len(data)>1):
-                    #self.datos_recibidos.emit(data)
-                    configuracion = Configuracion.objects.first()
-                    configuracion.lectura = data
-                    configuracion.save()
-                    time.sleep(self.espera)
+                data = self.lectura.readline()
+                data = self.calculo(data)
+                configuracion = Configuracion.objects.first()
+                configuracion.lectura = data
+                configuracion.save()
+                time.sleep(self.espera)
             except Exception:
                 pass
 
-    def calculo(self):
-        a = self.lectura.readline().decode().strip()
-        b = float(a.split(' ')[-1].split('kg')[0])
+    def calculo(self, data):
+        a = data.decode().strip()
+        b = a.split(' ')[-1].split('kg')[0]
         return b
                 
     def iniciar_hilo(self):
@@ -75,6 +75,8 @@ class Comunicacion(object):
 
     def conectarm(self):
         configuracion = Configuracion.objects.first()
-        self.serial.lectura.port = configuracion.puerto
-        self.serial.lectura.baudrate  = configuracion.velocidad
-        self.serial.conexionSerial()
+        self.configuracion()
+        self.lectura.port = configuracion.puerto
+        self.lectura.baudrate  = configuracion.velocidad
+        self.conexionSerial()
+        self.iniciar_hilo()
